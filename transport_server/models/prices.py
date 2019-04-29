@@ -15,46 +15,37 @@ class Prices(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, transport_id: int=None, _date: int=None, coach_price: float=None, comfort_price: float=None, business_price: float=None, first_class_price: float=None):  # noqa: E501
+    # def __init__(self, transport_id: int=None, _date: int=None, coach_price: float=None, comfort_price: float=None, business_price: float=None, first_class_price: float=None):  # noqa: E501
+    def __init__(self, transport_type: str=None, _date: int=None, avg_price: float=None, min_price: float=None):  # noqa: E501
         """Prices - a model defined in Swagger
 
-        :param transport_id: The transport_id of this Prices.  # noqa: E501
-        :type transport_id: int
+        :param transport_type: The transport_type of this Prices.  # noqa: E501
+        :type transport_type: str
         :param _date: The _date of this Prices.  # noqa: E501
         :type _date: int
-        :param coach_price: The coach_price of this Prices.  # noqa: E501
-        :type coach_price: float
-        :param comfort_price: The comfort_price of this Prices.  # noqa: E501
-        :type comfort_price: float
-        :param business_price: The business_price of this Prices.  # noqa: E501
-        :type business_price: float
-        :param first_class_price: The first_class_price of this Prices.  # noqa: E501
-        :type first_class_price: float
+        :param avg_price: The avg_price of this Prices.  # noqa: E501
+        :type avg_price: float
+        :param min_price: The min_price of this Prices.  # noqa: E501
+        :type min_price: float
         """
-        self.swagger_types = {
-            'transport_id': int,
+        self.types = {
+            'transport_type': str,
             '_date': int,
-            'coach_price': float,
-            'comfort_price': float,
-            'business_price': float,
-            'first_class_price': float
+            'avg_price': float,
+            'min_price': float
         }
 
         self.attribute_map = {
-            'transport_id': 'transportId',
+            'transport_type': 'transportType',
             '_date': 'date',
-            'coach_price': 'coachPrice',
-            'comfort_price': 'comfortPrice',
-            'business_price': 'businessPrice',
-            'first_class_price': 'firstClassPrice'
+            'avg_price': 'avgPrice',
+            'min_price': 'minPrice'
         }
 
-        self._transport_id = transport_id
+        self._transport_type = transport_type
         self.__date = _date
-        self._coach_price = coach_price
-        self._comfort_price = comfort_price
-        self._business_price = business_price
-        self._first_class_price = first_class_price
+        self._avg_price = avg_price
+        self._min_price = min_price
 
     @classmethod
     def from_dict(cls, dikt) -> 'Prices':
@@ -68,25 +59,31 @@ class Prices(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def transport_id(self) -> int:
-        """Gets the transport_id of this Prices.
+    def transport_type(self) -> str:
+        """Gets the transport_type of this Prices.
 
 
-        :return: The transport_id of this Prices.
-        :rtype: int
+        :return: The transport_type of this Prices.
+        :rtype: str
         """
-        return self._transport_id
+        return self._transport_type
 
-    @transport_id.setter
-    def transport_id(self, transport_id: int):
-        """Sets the transport_id of this Prices.
+    @transport_type.setter
+    def transport_type(self, transport_type: str):
+        """Sets the transport_type of this Prices.
 
 
-        :param transport_id: The transport_id of this Prices.
-        :type transport_id: int
+        :param transport_type: The transport_type of this Prices.
+        :type transport_type: str
         """
+        allowed_values = ["aircraft", "bus", "train"]  # noqa: E501
+        if transport_type not in allowed_values:
+            raise ValueError(
+                "Invalid value for `transport_type` ({0}), must be one of {1}"
+                    .format(transport_type, allowed_values)
+            )
 
-        self._transport_id = transport_id
+        self._transport_type = transport_type
 
     @property
     def _date(self) -> int:
@@ -110,85 +107,43 @@ class Prices(Model):
         self.__date = _date
 
     @property
-    def coach_price(self) -> float:
-        """Gets the coach_price of this Prices.
+    def avg_price(self) -> float:
+        """Gets the avg_price of this Prices.
 
 
-        :return: The coach_price of this Prices.
+        :return: The avg_price of this Prices.
         :rtype: float
         """
-        return self._coach_price
+        return self._avg_price
 
-    @coach_price.setter
-    def coach_price(self, coach_price: float):
-        """Sets the coach_price of this Prices.
+    @avg_price.setter
+    def avg_price(self, avg_price: float):
+        """Sets the avg_price of this Prices.
 
 
-        :param coach_price: The coach_price of this Prices.
-        :type coach_price: float
+        :param avg_price: The avg_price of this Prices.
+        :type avg_price: float
         """
 
-        self._coach_price = coach_price
+        self._avg_price = avg_price
 
     @property
-    def comfort_price(self) -> float:
-        """Gets the comfort_price of this Prices.
+    def min_price(self) -> float:
+        """Gets the min_price of this Prices.
 
 
-        :return: The comfort_price of this Prices.
+        :return: The min_price of this Prices.
         :rtype: float
         """
-        return self._comfort_price
+        return self._min_price
 
-    @comfort_price.setter
-    def comfort_price(self, comfort_price: float):
-        """Sets the comfort_price of this Prices.
+    @min_price.setter
+    def min_price(self, min_price: float):
+        """Sets the min_price of this Prices.
 
 
-        :param comfort_price: The comfort_price of this Prices.
-        :type comfort_price: float
+        :param min_price: The min_price of this Prices.
+        :type min_price: float
         """
 
-        self._comfort_price = comfort_price
-
-    @property
-    def business_price(self) -> float:
-        """Gets the business_price of this Prices.
-
-
-        :return: The business_price of this Prices.
-        :rtype: float
-        """
-        return self._business_price
-
-    @business_price.setter
-    def business_price(self, business_price: float):
-        """Sets the business_price of this Prices.
-
-
-        :param business_price: The business_price of this Prices.
-        :type business_price: float
-        """
-
-        self._business_price = business_price
-
-    @property
-    def first_class_price(self) -> float:
-        """Gets the first_class_price of this Prices.
-
-
-        :return: The first_class_price of this Prices.
-        :rtype: float
-        """
-        return self._first_class_price
-
-    @first_class_price.setter
-    def first_class_price(self, first_class_price: float):
-        """Sets the first_class_price of this Prices.
-
-
-        :param first_class_price: The first_class_price of this Prices.
-        :type first_class_price: float
-        """
-
-        self._first_class_price = first_class_price
+        self._min_price = min_price

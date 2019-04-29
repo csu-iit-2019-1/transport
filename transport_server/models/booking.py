@@ -5,6 +5,7 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
+from transport_server import util
 from transport_server.models.base_model_ import Model
 
 
@@ -14,7 +15,8 @@ class Booking(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, booking_id: int=None, transport_id: int=None, person_id: int=None, count_of_adults: int=None, count_of_kids: int=None, price: float=None):  # noqa: E501
+    # def __init__(self, booking_id: int=None, transport_id: int=None, person_id: int=None, count_of_adults: int=None, count_of_kids: int=None, price: float=None):  # noqa: E501
+    def __init__(self, booking_id: int = None, transport_id: int = None, person_id: int = None, count_of_persons: int = None, price: float = None):  # noqa: E501
         """Booking - a model defined in Swagger
 
         :param booking_id: The booking_id of this Booking.  # noqa: E501
@@ -23,10 +25,8 @@ class Booking(Model):
         :type transport_id: int
         :param person_id: The person_id of this Booking.  # noqa: E501
         :type person_id: int
-        :param count_of_adults: The count_of_adults of this Booking.  # noqa: E501
-        :type count_of_adults: int
-        :param count_of_kids: The count_of_kids of this Booking.  # noqa: E501
-        :type count_of_kids: int
+        :param count_of_persons: The count_of_persons of this Booking.  # noqa: E501
+        :type count_of_persons: int
         :param price: The price of this Booking.  # noqa: E501
         :type price: float
         """
@@ -34,8 +34,7 @@ class Booking(Model):
             'booking_id': int,
             'transport_id': int,
             'person_id': int,
-            'count_of_adults': int,
-            'count_of_kids': int,
+            'count_of_persons': int,
             'price': float
         }
 
@@ -43,28 +42,26 @@ class Booking(Model):
             'booking_id': 'bookingId',
             'transport_id': 'transportId',
             'person_id': 'personId',
-            'count_of_adults': 'countOfAdults',
-            'count_of_kids': 'countOfKids',
+            'count_of_persons': 'countOfPersons',
             'price': 'price'
         }
 
         self._booking_id = booking_id
         self._transport_id = transport_id
         self._person_id = person_id
-        self._count_of_adults = count_of_adults
-        self._count_of_kids = count_of_kids
+        self._count_of_persons = count_of_persons
         self._price = price
 
-    # @classmethod
-    # def from_dict(cls, dikt) -> 'Booking':
-    #     """Returns the dict as a model
-    #
-    #     :param dikt: A dict.
-    #     :type: dict
-    #     :return: The Booking of this Booking.  # noqa: E501
-    #     :rtype: Booking
-    #     """
-    #     return util.deserialize_model(dikt, cls)
+    @classmethod
+    def from_dict(cls, dikt) -> 'Booking':
+        """Returns the dict as a model
+
+        :param dikt: A dict.
+        :type: dict
+        :return: The Booking of this Booking.  # noqa: E501
+        :rtype: Booking
+        """
+        return util.deserialize_model(dikt, cls)
 
     @property
     def booking_id(self) -> int:
@@ -134,48 +131,25 @@ class Booking(Model):
         self._person_id = person_id
 
     @property
-    def count_of_adults(self) -> int:
-        """Gets the count_of_adults of this Booking.
+    def count_of_persons(self) -> int:
+        """Gets the count_of_persons of this Booking.
 
 
-        :return: The count_of_adults of this Booking.
+        :return: The count_of_persons of this Booking.
         :rtype: int
         """
-        return self._count_of_adults
+        return self._count_of_persons
 
-    @count_of_adults.setter
-    def count_of_adults(self, count_of_adults: int):
-        """Sets the count_of_adults of this Booking.
-
-
-        :param count_of_adults: The count_of_adults of this Booking.
-        :type count_of_adults: int
-        """
-        if count_of_adults is None:
-            raise ValueError("Invalid value for `count_of_adults`, must not be `None`")  # noqa: E501
-
-        self._count_of_adults = count_of_adults
-
-    @property
-    def count_of_kids(self) -> int:
-        """Gets the count_of_kids of this Booking.
+    @count_of_persons.setter
+    def count_of_persons(self, count_of_persons: int):
+        """Sets the count_of_persons of this Booking.
 
 
-        :return: The count_of_kids of this Booking.
-        :rtype: int
-        """
-        return self._count_of_kids
-
-    @count_of_kids.setter
-    def count_of_kids(self, count_of_kids: int):
-        """Sets the count_of_kids of this Booking.
-
-
-        :param count_of_kids: The count_of_kids of this Booking.
-        :type count_of_kids: int
+        :param count_of_persons: The count_of_persons of this Booking.
+        :type count_of_persons: int
         """
 
-        self._count_of_kids = count_of_kids
+        self._count_of_persons = count_of_persons
 
     @property
     def price(self) -> float:

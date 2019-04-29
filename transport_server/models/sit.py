@@ -15,36 +15,32 @@ class Sit(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, class_name: str=None, sit_number: int=None, state: str='available', price: float=None):  # noqa: E501
+    def __init__(self, sit_number: int = None, state: str = 'available', transport_id: int = None):  # noqa: E501
+
         """Sit - a model defined in Swagger
 
-        :param class_name: The class_name of this Sit.  # noqa: E501
-        :type class_name: str
         :param sit_number: The sit_number of this Sit.  # noqa: E501
         :type sit_number: int
         :param state: The state of this Sit.  # noqa: E501
         :type state: str
-        :param price: The price of this Sit.  # noqa: E501
-        :type price: float
+        :param transport_id: The transport_id of this Sit.  # noqa: E501
+        :type transport_id: int
         """
-        self.swagger_types = {
-            'class_name': str,
+        self.types = {
             'sit_number': int,
             'state': str,
-            'price': float
+            'transport_id': int
         }
 
         self.attribute_map = {
-            'class_name': 'className',
             'sit_number': 'sitNumber',
             'state': 'state',
-            'price': 'price'
+            'transport_id': 'transportId'
         }
 
-        self._class_name = class_name
         self._sit_number = sit_number
         self._state = state
-        self._price = price
+        self._transport_id = transport_id
 
     @classmethod
     def from_dict(cls, dikt) -> 'Sit':
@@ -56,33 +52,6 @@ class Sit(Model):
         :rtype: Sit
         """
         return util.deserialize_model(dikt, cls)
-
-    @property
-    def class_name(self) -> str:
-        """Gets the class_name of this Sit.
-
-
-        :return: The class_name of this Sit.
-        :rtype: str
-        """
-        return self._class_name
-
-    @class_name.setter
-    def class_name(self, class_name: str):
-        """Sets the class_name of this Sit.
-
-
-        :param class_name: The class_name of this Sit.
-        :type class_name: str
-        """
-        allowed_values = ["coach", "comfort", "business", "first"]  # noqa: E501
-        if class_name not in allowed_values:
-            raise ValueError(
-                "Invalid value for `class_name` ({0}), must be one of {1}"
-                .format(class_name, allowed_values)
-            )
-
-        self._class_name = class_name
 
     @property
     def sit_number(self) -> int:
@@ -135,24 +104,24 @@ class Sit(Model):
         self._state = state
 
     @property
-    def price(self) -> float:
-        """Gets the price of this Sit.
+    def transport_id(self) -> int:
+        """Gets the transport_id of this Sit.
 
 
-        :return: The price of this Sit.
-        :rtype: float
+        :return: The transport_id of this Sit.
+        :rtype: int
         """
-        return self._price
+        return self._transport_id
 
-    @price.setter
-    def price(self, price: float):
-        """Sets the price of this Sit.
+    @transport_id.setter
+    def transport_id(self, transport_id: int):
+        """Sets the transport_id of this Sit.
 
 
-        :param price: The price of this Sit.
-        :type price: float
+        :param transport_id: The transport_id of this Sit.
+        :type transport_id: int
         """
-        if price is None or price <= 0.0:
-            raise ValueError("Invalid value for `price`, must not be `None` and must be positive")  # noqa: E501
+        if transport_id is None:
+            raise ValueError("Invalid value for `transport_id`, must not be `None`")  # noqa: E501
 
-        self._price = price
+        self._transport_id = transport_id

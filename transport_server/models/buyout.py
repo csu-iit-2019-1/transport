@@ -23,7 +23,7 @@ class Buyout(Model):
         :param status: The status of this Buyout.  # noqa: E501
         :type status: str
         """
-        self.swagger_types = {
+        self.types = {
             'booking_id': int,
             'status': str
         }

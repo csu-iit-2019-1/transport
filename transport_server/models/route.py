@@ -16,25 +16,29 @@ class Route(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, transport_id: int=None, transport_type: str=None, name: str=None, sits: List[Sit]=None, start_point: int=None, end_point: int=None, departure_time: int=None, arrive_time: int=None):  # noqa: E501
-        """Flight - a model defined in Swagger
+    def __init__(self, transport_id: int=None, transport_type: str=None, name: str=None, sits: List[Sit]=None, start_point: int=None, end_point: int=None, departure_time: int=None, arrive_time: int=None, price: float=None):  # noqa: E501
+        """Route - a model defined in Swagger
 
-        :param transport_id: The transport_id of this Flight.  # noqa: E501
+        :param transport_id: The transport_id of this Route.  # noqa: E501
         :type transport_id: int
-        :param name: The name of this Flight.  # noqa: E501
+        :param transport_type: The transport_type of this Route.  # noqa: E501
+        :type transport_type: str
+        :param name: The name of this Route.  # noqa: E501
         :type name: str
-        :param sits: The sits of this Flight.  # noqa: E501
+        :param sits: The sits of this Route.  # noqa: E501
         :type sits: List[Sit]
-        :param start_point: The start_point of this Flight.  # noqa: E501
+        :param start_point: The start_point of this Route.  # noqa: E501
         :type start_point: int
-        :param end_point: The end_point of this Flight.  # noqa: E501
+        :param end_point: The end_point of this Route.  # noqa: E501
         :type end_point: int
-        :param departure_time: The departure_time of this Flight.  # noqa: E501
-        :type departure_time: int
-        :param arrive_time: The arrive_time of this Flight.  # noqa: E501
-        :type arrive_time: int
+        :param departure_time: The departure_time of this Route.  # noqa: E501
+        :type departure_time: object
+        :param arrive_time: The arrive_time of this Route.  # noqa: E501
+        :type arrive_time: object
+        :param price: The price of this Route.  # noqa: E501
+        :type price: float
         """
-        self.swagger_types = {
+        self.types = {
             'transport_id': int,
             'transport_type': str,
             'name': str,
@@ -42,17 +46,20 @@ class Route(Model):
             'start_point': int,
             'end_point': int,
             'departure_time': int,
-            'arrive_time': int
+            'arrive_time': int,
+            'price': float
         }
 
         self.attribute_map = {
             'transport_id': 'transportId',
+            'transport_type': 'transportType',
             'name': 'name',
             'sits': 'sits',
             'start_point': 'startPoint',
             'end_point': 'endPoint',
             'departure_time': 'departureTime',
-            'arrive_time': 'arriveTime'
+            'arrive_time': 'arriveTime',
+            'price': 'price'
         }
 
         self._transport_id = transport_id
@@ -63,6 +70,7 @@ class Route(Model):
         self._end_point = end_point
         self._departure_time = departure_time
         self._arrive_time = arrive_time
+        self._price = price
 
     @classmethod
     def from_dict(cls, dikt) -> 'Route':
@@ -107,12 +115,12 @@ class Route(Model):
         return self._transport_type
 
     @transport_type.setter
-    def class_name(self, transport_type: str):
-        """Sets the class_name of this Sit.
+    def transport_type(self, transport_type: str):
+        """Sets the transport_type of this Route.
 
 
-        :param class_name: The class_name of this Sit.
-        :type class_name: str
+        :param transport_type: The transport_type of this Route.
+        :type transport_type: str
         """
         allowed_values = ["aircraft", "train", "bus"]  # noqa: E501
         if transport_type not in allowed_values:
@@ -250,3 +258,24 @@ class Route(Model):
         """
 
         self._arrive_time = arrive_time
+
+    @property
+    def price(self) -> float:
+        """Gets the price of this Route.
+
+
+        :return: The price of this Route.
+        :rtype: float
+        """
+        return self._price
+
+    @price.setter
+    def price(self, price: float):
+        """Sets the price of this Route.
+
+
+        :param price: The price of this Route.
+        :type price: float
+        """
+
+        self._price = price

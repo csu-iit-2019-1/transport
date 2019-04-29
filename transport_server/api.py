@@ -1,5 +1,6 @@
 import json
 import logging
+import time
 import traceback
 
 from bottle import route, run, request, response, HTTPResponse
@@ -51,8 +52,7 @@ def get_transport_list():
         'points',
         'startPoint',
         'startDate',
-        'endDate',
-        'countOfAdults'
+        'endDate'
     ]
     try:
         params = request.json
@@ -81,10 +81,9 @@ def get_pricelist():
     :return: list of avg and min prices for types of transport by date
     """
     required_params = [
-        'startDate',
-        'endDate',
+        'departureDate',
         'startPoint',
-        'endPoint'
+        'endPoints'
     ]
     try:
         params = request.json
@@ -148,3 +147,9 @@ def buy_booking(booking_id):
             status=400,
             body=json.dumps('Invalid operation')
         )
+
+
+# print(int(time.time()))  # 'Wed Apr 5 00:02:49 2017'
+
+print(time.ctime(1556811480))
+print(int(time.time()))
