@@ -16,7 +16,8 @@ class Booking(Model):
     """
 
     # def __init__(self, booking_id: int=None, transport_id: int=None, person_id: int=None, count_of_adults: int=None, count_of_kids: int=None, price: float=None):  # noqa: E501
-    def __init__(self, booking_id: int = None, transport_id: int = None, person_id: int = None, count_of_persons: int = None, price: float = None):  # noqa: E501
+    def __init__(self, booking_id: int = None, transport_id: int = None, person_id: int = None,
+                 count_of_persons: int = None, count_of_adults: int=None, count_of_kids: int=None, price: float = None):  # noqa: E501
         """Booking - a model defined in Swagger
 
         :param booking_id: The booking_id of this Booking.  # noqa: E501
@@ -35,6 +36,8 @@ class Booking(Model):
             'transport_id': int,
             'person_id': int,
             'count_of_persons': int,
+            'count_of_adults': int,
+            'count_of_kids': int,
             'price': float
         }
 
@@ -43,6 +46,8 @@ class Booking(Model):
             'transport_id': 'transportId',
             'person_id': 'personId',
             'count_of_persons': 'countOfPersons',
+            'count_of_adults': 'countOfAdults',
+            'count_of_kids': 'countOfKids',
             'price': 'price'
         }
 
@@ -50,6 +55,8 @@ class Booking(Model):
         self._transport_id = transport_id
         self._person_id = person_id
         self._count_of_persons = count_of_persons
+        self._count_of_adults = count_of_adults
+        self._count_of_kids = count_of_kids
         self._price = price
 
     @classmethod
@@ -171,3 +178,19 @@ class Booking(Model):
         """
 
         self._price = price
+
+    @property
+    def count_of_adults(self) -> int:
+        return self._count_of_adults
+
+    @count_of_adults.setter
+    def count_of_adults(self, count_of_adults: int):
+        self._count_of_persons = count_of_adults
+
+    @property
+    def count_of_kids(self) -> int:
+        return self._count_of_kids
+
+    @count_of_kids.setter
+    def count_of_kids(self, count_of_kids: int):
+        self._count_of_kids = count_of_kids

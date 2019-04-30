@@ -1,6 +1,7 @@
 import json
 import logging
 import time
+import gunicorn
 import traceback
 
 from bottle import route, run, request, response, HTTPResponse
@@ -8,7 +9,7 @@ from bottle import route, run, request, response, HTTPResponse
 from transport_server.controllers.booking_controller import book_transport
 from transport_server.controllers.buyout_controller import buyout_booking
 from transport_server.controllers.transport_controller import get_transport_by_id, find_transport_by_parameters, \
-    getting_price_by_days
+    get_price_by_days
 
 LOGGER = logging.getLogger(__name__)
 handler = logging.StreamHandler()
@@ -25,6 +26,8 @@ INVALID_INPUT = HTTPResponse(
 
 @route('/transport/<transport_id>', method='GET')
 def get_transport(transport_id):
+    LOGGER.info('==========request!!===========')
+    LOGGER.info(transport_id)
     try:
         transport_id = int(transport_id)
         if transport_id <= 0:
@@ -37,36 +40,40 @@ def get_transport(transport_id):
     if transport:
         return HTTPResponse(
             status=200,
-            body=json.dumps(transport)
+            body=json.dumps(transport).encode('utf-8')
         )
     else:
         return HTTPResponse(
             status=404,
-            body=json.dumps('Transport not found')
+            body=json.dumps('Transport not found').encode('utf-8')
         )
 
 
 @route('/transport/get_list', method='POST')
 def get_transport_list():
-    required_params = [
-        'points',
-        'startPoint',
-        'startDate',
-        'endDate'
-    ]
     try:
-        params = request.json
+        params = dict(request.json)
+        if not params:
+            params = {
+                'departureDate': request.forms.get('departureDate'),
+                'transportType': request.forms.get('transportType'),
+                'startPoint': request.forms.get('startPoint'),
+                'endPoints': request.forms.get('endPoints')
+            }
+        LOGGER.info(f'{type(params)}, {params}')
     except:
         LOGGER.error(traceback.format_exc())
         return INVALID_INPUT
-    for p in required_params:
-        if p not in params.keys:
-            return INVALID_INPUT
+    if not params:
+        LOGGER.info('No params')
+        return INVALID_INPUT
+
     transport_list = find_transport_by_parameters(params)
+    LOGGER.info(transport_list)
     if transport_list:
         return HTTPResponse(
             status=200,
-            body=json.dumps(transport_list)
+            body=json.dumps(transport_list).encode('utf-8')
         )
     else:
         return HTTPResponse(
@@ -86,18 +93,31 @@ def get_pricelist():
         'endPoints'
     ]
     try:
-        params = request.json
+        params = dict(request.json)
+        if not params:
+            params = {
+                'departureDate': request.forms.get('departureDate'),
+                'transportType': request.forms.get('transportType'),
+                'startPoint': request.forms.get('startPoint'),
+                'endPoints': request.forms.get('endPoints')
+            }
+        LOGGER.info(f'{type(params)}, {params}')
     except:
         LOGGER.error(traceback.format_exc())
         return INVALID_INPUT
+    if not params:
+        LOGGER.info('No params')
+        return INVALID_INPUT
+
     for p in required_params:
         if p not in params:
             return INVALID_INPUT
-    price_list = getting_price_by_days(params)
+    price_list = get_price_by_days(params)
+    LOGGER.info(price_list)
     if price_list:
         return HTTPResponse(
             status=200,
-            body=json.dumps(price_list)
+            body=json.dumps(price_list).encode('utf-8')
         )
     else:
         return HTTPResponse(
@@ -108,24 +128,35 @@ def get_pricelist():
 
 @route('/transport/booking/<transport_id>', method='POST')
 def booking_transport(transport_id):
+    LOGGER.info(f'transport_id: {transport_id}')
     required_params = [
-        'transportId',
         'personId',
         'countOfAdults'
     ]
     try:
-        params = request.json
+        params = dict(request.json)
+        if not params:
+            params = {
+                'departureDate': request.forms.get('departureDate'),
+                'transportType': request.forms.get('transportType'),
+                'startPoint': request.forms.get('startPoint'),
+                'endPoints': request.forms.get('endPoints')
+            }
+        LOGGER.info(f'{type(params)}, {params}')
     except:
         LOGGER.error(traceback.format_exc())
         return INVALID_INPUT
-    for p in required_params:
-        if p not in params:
-            return INVALID_INPUT
+    if not params:
+        LOGGER.info('No params')
+        return INVALID_INPUT
+    # for p in required_params:
+    #     if p not in params:
+    #         return INVALID_INPUT
     booking = book_transport(transport_id, params)
     if booking:
         return HTTPResponse(
             status=200,
-            body=json.dumps(booking)
+            body=json.dumps(booking).encode('utf-8')
         )
     else:
         return HTTPResponse(
@@ -149,7 +180,7 @@ def buy_booking(booking_id):
         )
 
 
-# print(int(time.time()))  # 'Wed Apr 5 00:02:49 2017'
-
-print(time.ctime(1556811480))
-print(int(time.time()))
+if __name__ == '__main__':
+    LOGGER.info("SERVER HAS BEEN STARTED!!!")
+    # run(host='0.0.0.0', port=8080)
+    run(host='0.0.0.0', port=8181, server='gunicorn', workers=4, reload=True, debug=False)
