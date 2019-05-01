@@ -2,10 +2,6 @@
 
 from __future__ import absolute_import
 
-from flask import json
-from six import BytesIO
-
-from transport_server.models.buyout import Buyout  # noqa: E501
 from transport_server.test import BaseTestCase
 
 

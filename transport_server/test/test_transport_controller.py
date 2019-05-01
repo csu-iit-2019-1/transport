@@ -2,11 +2,6 @@
 
 from __future__ import absolute_import
 
-from flask import json
-from six import BytesIO
-
-from transport_server.models.route import Route  # noqa: E501
-from transport_server.models.prices import Prices  # noqa: E501
 from transport_server.test import BaseTestCase
 
 

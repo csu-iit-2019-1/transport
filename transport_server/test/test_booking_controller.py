@@ -2,10 +2,6 @@
 
 from __future__ import absolute_import
 
-from flask import json
-from six import BytesIO
-
-from transport_server.models.booking import Booking  # noqa: E501
 from transport_server.test import BaseTestCase
 
 
@@ -18,13 +14,12 @@ class TestBookingController(BaseTestCase):
         
         """
         data = dict(personId=56,
-                    countOfAdults=789,
-                    countOfKids=789)
+                    countOfPersons=789)
         response = self.client.open(
             '/CSU7/Transport/1.0.0/transport/booking/{transportId}'.format(transportId=789),
             method='POST',
             data=data,
-            content_type='multipart/form-data')
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

@@ -1,7 +1,6 @@
 import logging
 import traceback
 
-from transport_server.models.booking import Booking
 from transport_server.utils import get_db_connection
 
 LOGGER = logging.getLogger(__name__)
@@ -22,7 +21,7 @@ def book_transport(transport_id, person_id, count_of_persons):  # noqa: E501
     :param countOfPersons:
     :type countOfPersons: int
 
-    :rtype: Booking
+    :rtype: dict
     """
     LOGGER.info('booking starts!!!!')
 

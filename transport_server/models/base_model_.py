@@ -9,7 +9,7 @@ T = typing.TypeVar('T')
 
 
 class Model(object):
-    # swaggerTypes: The key is attribute name and the
+    # Types: The key is attribute name and the
     # value is attribute type.
     types = {}
 
