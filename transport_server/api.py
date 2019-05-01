@@ -128,56 +128,52 @@ def get_pricelist():
 
 @route('/transport/booking/<transport_id>', method='POST')
 def booking_transport(transport_id):
-    LOGGER.info(f'transport_id: {transport_id}')
+    LOGGER.info('book for transport {}'.format(transport_id))
+    if not isinstance(transport_id, int) or transport_id < 1:
+        return INVALID_INPUT
+
     required_params = [
         'personId',
-        'countOfAdults'
+        'countOfPersons'
     ]
     try:
         params = dict(request.json)
-        if not params:
-            params = {
-                'departureDate': request.forms.get('departureDate'),
-                'transportType': request.forms.get('transportType'),
-                'startPoint': request.forms.get('startPoint'),
-                'endPoints': request.forms.get('endPoints')
-            }
         LOGGER.info(f'{type(params)}, {params}')
     except:
         LOGGER.error(traceback.format_exc())
         return INVALID_INPUT
-    if not params:
-        LOGGER.info('No params')
-        return INVALID_INPUT
-    # for p in required_params:
-    #     if p not in params:
-    #         return INVALID_INPUT
-    booking = book_transport(transport_id, params)
-    if booking:
-        return HTTPResponse(
-            status=200,
-            body=json.dumps(booking).encode('utf-8')
-        )
-    else:
-        return HTTPResponse(
-            status=400,
-            body=json.dumps('Invalid operation')
-        )
+    for p in required_params:
+        if p not in params or not isinstance(params[p], int):
+            return INVALID_INPUT
+    LOGGER.info('book params: {}', params)
+
+    date_to_response = book_transport(transport_id, params['personId'], params['countOfPersons'])
+    LOGGER.info('book response: {}'.format(date_to_response))
+
+    if date_to_response:
+        if isinstance(date_to_response, dict):
+            return HTTPResponse(
+                status=200,
+                body=json.dumps(date_to_response).encode('utf-8')
+            )
+        else:
+            date_to_response = 'Invalid operation'
+    return HTTPResponse(
+        status=400,
+        body=json.dumps(date_to_response)
+    )
 
 
 @route('/transport/buyout/<booking_id>', method='POST')
 def buy_booking(booking_id):
-    buyout = buyout_booking(booking_id)
-    if buyout:
-        return HTTPResponse(
-            status=200,
-            body=json.dumps(buyout)
-        )
-    else:
-        return HTTPResponse(
-            status=400,
-            body=json.dumps('Invalid operation')
-        )
+    if not isinstance(booking_id, int) or booking_id < 1:
+        return INVALID_INPUT
+    buyout_result = buyout_booking(booking_id)
+    LOGGER.info('buyout result: {}'.format(buyout_result))
+    return HTTPResponse(
+        status=200,
+        body=json.dumps(buyout_result)
+    )
 
 
 if __name__ == '__main__':
