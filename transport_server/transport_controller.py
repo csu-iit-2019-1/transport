@@ -285,7 +285,7 @@ def get_transport_by_id(transport_id):
 
 def get_price_by_days(departure_date, start_point, end_points, transport_type, count_of_persons):
     # start_city_name = start_point
-    id_to_name = {1: 'челябинск', 2: 'москва', 3: 'милан', 4: 'берлин', 5: 'париж', 6: 'сочи'}
+    id_to_name = {1: 'челябинск', 2: 'москва', 3: 'милан', 4: 'берлин', 5: 'рим', 6: 'сочи'}
     # try:
     #     resp = http.request('GET', URL_CITY + 'cities/{}'.format(start_point))
     #     LOGGER.info(resp.data)
