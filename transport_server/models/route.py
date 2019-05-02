@@ -6,7 +6,7 @@ from typing import List
 
 from models.base_model_ import Model
 from models.sit import Sit  # noqa: F401,E501
-import util
+import models.util
 
 
 class Route(Model):
