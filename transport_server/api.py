@@ -119,7 +119,7 @@ def get_pricelist():
             status=400,
             body='Departure date must be grater then today'
         )
-    departure_date = departure_date.strftime('%Y-%M-%D')
+    departure_date = departure_date.strftime('%Y-%m-%d')
     count_of_persons = 0
     if 'countOfPersons' in params.keys() and isinstance(params['countOfPersons'], int):
         count_of_persons = params['countOfPersons']
