@@ -4,9 +4,9 @@ from __future__ import absolute_import
 
 from typing import List
 
-from transport_server.models.base_model_ import Model
-from transport_server.models.sit import Sit  # noqa: F401,E501
-from transport_server import util
+from models.base_model_ import Model
+from models.sit import Sit  # noqa: F401,E501
+import util
 
 
 class Route(Model):
