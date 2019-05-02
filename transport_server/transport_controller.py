@@ -287,6 +287,7 @@ def get_price_by_days(departure_date, start_point, end_points, transport_type, c
     # start_city_name = start_point
     try:
         resp = http.request('GET', URL_CITY + 'cities/{}'.format(start_point))
+        LOGGER.info(resp.data)
         data = json.loads(resp.data).replace('\'', '"')
         # data2 = json.loads(data)
         # print(data2['CityName'].lower())
