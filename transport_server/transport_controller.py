@@ -285,42 +285,47 @@ def get_transport_by_id(transport_id):
 
 def get_price_by_days(departure_date, start_point, end_points, transport_type, count_of_persons):
     # start_city_name = start_point
-    try:
-        resp = http.request('GET', URL_CITY + 'cities/{}'.format(start_point))
-        LOGGER.info(resp.data)
-
-        start_city = json.loads(resp.data.decode('utf-8')).replace('\'', '"')
-        # LOGGER.info(data)
-        # data2 = json.loads(data)
-        # data2 = json.loads(data)
-        # print(data2['CityName'].lower())
-        start_city = json.loads(start_city)
-        if start_city:
-            start_city_name = start_city['CityName'].lower()
-        else:
-            LOGGER.error('no city with such id')
-            return None
-    except:
-        LOGGER.error(traceback.format_exc())
-        return None
-    end_city_names = {}
-    for point in end_points:
-        try:
-            res = http.request('GET', URL_CITY + 'cities/{}'.format(point))
-            end_city = json.loads(res.data.decode('utf-8')).replace('\'', '"')
-            end_city = json.loads(end_city)
-            if end_city:
-                end_city_names[end_city['CityName'].lower()] = point
-            else:
-                LOGGER.error('no city with such id')
-                return None
-        except:
-            LOGGER.error(traceback.format_exc())
-            return None
+    id_to_name = {1: 'челябинск', 2: 'москва', 3: 'берлин', 4: 'лондон', 5: 'париж'}
+    # try:
+    #     resp = http.request('GET', URL_CITY + 'cities/{}'.format(start_point))
+    #     LOGGER.info(resp.data)
+    #
+    #     start_city = json.loads(resp.data.decode('utf-8')).replace('\'', '"')
+    #     # LOGGER.info(data)
+    #     # data2 = json.loads(data)
+    #     # data2 = json.loads(data)
+    #     # print(data2['CityName'].lower())
+    #     start_city = json.loads(start_city)
+    #     if start_city:
+    #         start_city_name = start_city['CityName'].lower()
+    #     else:
+    #         LOGGER.error('no city with such id')
+    #         return None
+    # except:
+    #     LOGGER.error(traceback.format_exc())
+    #     return None
+    # end_city_names = {}
+    # for point in end_points:
+    #     try:
+    #         res = http.request('GET', URL_CITY + 'cities/{}'.format(point))
+    #         end_city = json.loads(res.data.decode('utf-8')).replace('\'', '"')
+    #         end_city = json.loads(end_city)
+    #         if end_city:
+    #             end_city_names[end_city['CityName'].lower()] = point
+    #         else:
+    #             LOGGER.error('no city with such id')
+    #             return None
+    #     except:
+    #         LOGGER.error(traceback.format_exc())
+    #         return None
     # end_city_names = {}
     # for c in end_points:
     #     end_city_names[c] = c
 
+    start_city_name = id_to_name[start_point]
+    end_city_names = {}
+    for i in end_points:
+        end_city_names[id_to_name[i]] = i
     sql_select_start_point = 'select "Id" from "Cities" ' \
                              'where lower("Name") = %s'
     sql_select_end_points = 'select "Id", lower("Name") from "Cities" ' \
@@ -376,6 +381,7 @@ def get_price_by_days(departure_date, start_point, end_points, transport_type, c
                                                  transport_type=t_type).to_dict())
     return routes_resp
 
+
 # url = 'https://apicities20190502035621.azurewebsites.net/api/cities/Челябинск/cityid'.encode('utf-8')
 # city = 'Челябинск'.encode('utf-8')
 # print(type(city))
@@ -399,10 +405,11 @@ def get_price_by_days(departure_date, start_point, end_points, transport_type, c
 # print(data2)
 # for t in data2:
 #     print(t)
-# tr = get_price_by_days('2019-05-05', 8809, [6437, 5371, 904], ['aircraft', 'bus'], 0)
-# # tr = vv()
-# for t in tr:
-#     print(t)
+
+tr = get_price_by_days('2019-05-05', 1, [2, 3, 4], ['aircraft', 'bus'], 0)
+# tr = vv()
+for t in tr:
+    print(t)
 # che 8809
 # msc 6437
 # par 5371
