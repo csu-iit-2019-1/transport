@@ -58,13 +58,13 @@ def book_transport(transport_id, person_id, count_of_persons):  # noqa: E501
     #
     sql_insert_booking = 'insert into "Booking_Info"("Person_Id", "Transport_Id", "Count_Of_Persons", "Price") ' \
                          'values (%s, %s, %s, %s)'
-    # sql_select_booking_id = 'select "Id" from "Booking_Info" ' \
-    #                         'where "Person_Id" = %s and "Transport_Id" = %s'
+    sql_select_booking_id = 'select "Id" from "Booking_Info" ' \
+                            'where "Person_Id" = %s and "Transport_Id" = %s'
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(sql_insert_booking, (person_id, transport_id, count_of_persons, price*count_of_persons))
-                # cursor.execute(sql_select_booking_id, (person_id, transport_id))
+                cursor.execute(sql_select_booking_id, (person_id, transport_id))
                 booking_id = cursor.fetchone()
                 if not booking_id:
                     booking_id = 100
