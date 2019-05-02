@@ -10,6 +10,7 @@ from booking_controller import book_transport
 from buyout_controller import buyout_booking
 from transport_controller import get_transport_by_id, \
     get_price_by_days
+
 # from utils import psqlHandler
 
 LOGGER = logging.getLogger(__name__)
@@ -180,11 +181,17 @@ def booking_transport(transport_id):
     )
 
 
-@route('/transport/buyout/<booking_id>', method='POST')
+@route('/transport/buyout/<booking_id>', method='GET')
 def buy_booking(booking_id):
-    LOGGER.info('cuyouting for booking {}'.format(booking_id))
-    if not isinstance(booking_id, int) or booking_id < 1:
-        return INVALID_INPUT
+    LOGGER.info('buyouting for booking {}'.format(booking_id))
+    try:
+        booking_id = int(booking_id)
+    except:
+        LOGGER.info('invalid input of booking id')
+        return HTTPResponse(
+            status=200,
+            body=json.dumps(False)
+        )
     buyout_result = buyout_booking(booking_id)
     LOGGER.info('buyout result: {}'.format(buyout_result))
     return HTTPResponse(
@@ -194,7 +201,6 @@ def buy_booking(booking_id):
 
 
 if __name__ == '__main__':
-
     LOGGER.info("SERVER HAS BEEN STARTED!!!")
     # run(host='0.0.0.0', port=8080)
     run(host='0.0.0.0', port=8181, server='gunicorn', workers=4, reload=True, debug=False)
