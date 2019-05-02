@@ -5,9 +5,9 @@ import traceback
 
 import urllib3
 
-from transport_server.models.sit import Sit
-from transport_server.models.route import Route
-from transport_server.utils import get_db_connection, psqlHandler
+from models.sit import Sit
+from models.route import Route
+from utils import get_db_connection, psqlHandler
 
 LOGGER = logging.getLogger(__name__)
 handler = psqlHandler({'host': "localhost", 'user': "postgres",

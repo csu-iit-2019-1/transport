@@ -1,18 +1,16 @@
 import json
 import logging
-import time
 from datetime import datetime
 
-import gunicorn
 import traceback
 
-from bottle import route, run, request, response, HTTPResponse
+from bottle import route, run, request, HTTPResponse
 
-from transport_server.controllers.booking_controller import book_transport
-from transport_server.controllers.buyout_controller import buyout_booking
-from transport_server.controllers.transport_controller import get_transport_by_id, \
+from booking_controller import book_transport
+from buyout_controller import buyout_booking
+from transport_controller import get_transport_by_id, \
     get_price_by_days
-from transport_server.utils import psqlHandler
+from utils import psqlHandler
 
 LOGGER = logging.getLogger(__name__)
 handler = psqlHandler({'host': "localhost", 'user': "postgres",

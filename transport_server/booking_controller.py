@@ -1,7 +1,7 @@
 import logging
 import traceback
 
-from transport_server.utils import get_db_connection, psqlHandler
+from utils import get_db_connection, psqlHandler
 
 LOGGER = logging.getLogger(__name__)
 handler = psqlHandler({'host': "localhost", 'user': "postgres",
