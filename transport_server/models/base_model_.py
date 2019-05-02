@@ -3,7 +3,7 @@ import pprint
 import six
 import typing
 
-from transport_server.models import util
+from models import util
 
 T = typing.TypeVar('T')
 
