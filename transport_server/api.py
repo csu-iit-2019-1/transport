@@ -112,7 +112,7 @@ def get_pricelist():
     for p in required_params:
         if p not in params.keys():
             return INVALID_INPUT
-    departure_date = datetime.fromtimestamp(int(params['startDate']))
+    departure_date = datetime.fromtimestamp(int(params['departureDate']))
     if datetime.today() >= departure_date:
         LOGGER.error('Date must after today')
         return HTTPResponse(
