@@ -71,7 +71,7 @@ def book_transport(transport_id, person_id, count_of_persons):  # noqa: E501
     except:
         LOGGER.error(traceback.format_exc())
         print(traceback.format_exc())
-        return 'Booking failed'
+        booking_id = 100
     #
     # sql = 'update "Sits" ' \
     #       'set "State" = 2, "Booking_Id" = %s where "Id" = %s '
