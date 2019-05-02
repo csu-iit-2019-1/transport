@@ -151,7 +151,7 @@ def booking_transport(transport_id):
     ]
     try:
         params = dict(request.json)
-        LOGGER.info(f'{type(params)}, {params}')
+        LOGGER.info('{}, {}'.format(type(params), params))
     except:
         LOGGER.error(traceback.format_exc())
         return INVALID_INPUT
