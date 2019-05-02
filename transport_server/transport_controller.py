@@ -7,11 +7,12 @@ import urllib3
 
 from models.sit import Sit
 from models.route import Route
-from utils import get_db_connection, psqlHandler
+from utils import get_db_connection
 
 LOGGER = logging.getLogger(__name__)
-handler = psqlHandler({'host': "localhost", 'user': "postgres",
-                       'password': "secret", 'database': "Logs", 'port': '5639'})
+# handler = psqlHandler({'host': "localhost", 'user': "postgres",
+#                        'password': "secret", 'database': "Logs", 'port': '5639'})
+handler = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
 handler.setFormatter(formatter)
 LOGGER.addHandler(handler)

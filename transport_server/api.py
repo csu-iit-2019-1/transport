@@ -10,11 +10,12 @@ from booking_controller import book_transport
 from buyout_controller import buyout_booking
 from transport_controller import get_transport_by_id, \
     get_price_by_days
-from utils import psqlHandler
+# from utils import psqlHandler
 
 LOGGER = logging.getLogger(__name__)
-handler = psqlHandler({'host': "localhost", 'user': "postgres",
-                       'password': "secret", 'database': "Logs", 'port': '5639'})
+# handler = psqlHandler({'host': "localhost", 'user': "postgres",
+#                        'password': "secret", 'database': "Logs", 'port': '5639'})
+handler = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
 handler.setFormatter(formatter)
 LOGGER.addHandler(handler)
