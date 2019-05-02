@@ -27,59 +27,65 @@ def book_transport(transport_id, person_id, count_of_persons):  # noqa: E501
     """
     LOGGER.info('booking starts!!!!')
 
-    sql = 'select "Id" from "Sits" ' \
-          'where "Transport_Id" = %s and "State" = 1'
+    # sql = 'select "Id" from "Sits" ' \
+    #       'where "Transport_Id" = %s and "State" = 1'
+    sql = 'select "Price" from "Routes" where "Transport_Id" = %s'
     sql_get_price = 'select "Price" from "Routes" where "Id" = %s'
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(sql, (transport_id,))
-                sits_data = cursor.fetchall()
-                if not sits_data or len(sits_data) < count_of_persons:
-                    return 'No available sits'
+                # cursor.execute(sql, (transport_id,))
+                # sits_data = cursor.fetchall()
+                # if not sits_data or len(sits_data) < count_of_persons:
+                #     return 'No available sits'
 
                 cursor.execute(sql_get_price, (transport_id,))
-                price = cursor.fetchone()[0]
+                price = cursor.fetchone()
+                if not price:
+                    LOGGER.error('no transport')
+                    return None
+                else:
+                    price = price[0]
     except:
         LOGGER.error(traceback.format_exc())
         print(traceback.format_exc())
         return None
 
-    LOGGER.info('count of available sits: {}'.format(len(sits_data)))
-
-    sits_id_available = [x[0] for x in sits_data]
-    sits_to_book = sits_id_available[:count_of_persons]
-
+    # LOGGER.info('count of available sits: {}'.format(len(sits_data)))
+    #
+    # sits_id_available = [x[0] for x in sits_data]
+    # sits_to_book = sits_id_available[:count_of_persons]
+    #
     sql_insert_booking = 'insert into "Booking_Info"("Person_Id", "Transport_Id", "Count_Of_Persons", "Price") ' \
                          'values (%s, %s, %s, %s)'
-    sql_select_booking_id = 'select "Id" from "Booking_Info" ' \
-                            'where "Person_Id" = %s and "Transport_Id" = %s'
+    # sql_select_booking_id = 'select "Id" from "Booking_Info" ' \
+    #                         'where "Person_Id" = %s and "Transport_Id" = %s'
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(sql_insert_booking, (person_id, transport_id, count_of_persons, price*count_of_persons))
-                cursor.execute(sql_select_booking_id, (person_id, transport_id))
+                # cursor.execute(sql_select_booking_id, (person_id, transport_id))
                 booking_id = cursor.fetchone()[0]
     except:
         LOGGER.error(traceback.format_exc())
         print(traceback.format_exc())
         return 'Booking failed'
+    #
+    # sql = 'update "Sits" ' \
+    #       'set "State" = 2, "Booking_Id" = %s where "Id" = %s '
+    # for i in range(count_of_persons - 1):
+    #     sql += 'or "Id" = %s '
 
-    sql = 'update "Sits" ' \
-          'set "State" = 2, "Booking_Id" = %s where "Id" = %s '
-    for i in range(count_of_persons - 1):
-        sql += 'or "Id" = %s '
+    # query_params = [booking_id] + sits_to_book
 
-    query_params = [booking_id] + sits_to_book
-
-    try:
-        with get_db_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(sql, query_params)
-    except:
-        LOGGER.error(traceback.format_exc())
-        print(traceback.format_exc())
-        return 'Booking failed'
+    # try:
+    #     with get_db_connection() as connection:
+    #         with connection.cursor() as cursor:
+    #             cursor.execute(sql, query_params)
+    # except:
+    #     LOGGER.error(traceback.format_exc())
+    #     print(traceback.format_exc())
+    #     return 'Booking failed'
 
     return {'bookingId': booking_id}
 
