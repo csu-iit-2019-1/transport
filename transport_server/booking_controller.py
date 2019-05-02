@@ -65,7 +65,10 @@ def book_transport(transport_id, person_id, count_of_persons):  # noqa: E501
             with connection.cursor() as cursor:
                 cursor.execute(sql_insert_booking, (person_id, transport_id, count_of_persons, price*count_of_persons))
                 # cursor.execute(sql_select_booking_id, (person_id, transport_id))
-                booking_id = cursor.fetchone()[0]
+                booking_id = cursor.fetchone()
+                if not booking_id:
+                    LOGGER.error('no booking id selected')
+                    return None
     except:
         LOGGER.error(traceback.format_exc())
         print(traceback.format_exc())

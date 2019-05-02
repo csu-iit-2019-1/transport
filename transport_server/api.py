@@ -141,7 +141,10 @@ def get_pricelist():
 @route('/transport/booking/<transport_id>', method='POST')
 def booking_transport(transport_id):
     LOGGER.info('book for transport {}'.format(transport_id))
-    if not isinstance(transport_id, int) or transport_id < 1:
+    try:
+        transport_id = int(transport_id)
+    except:
+        LOGGER.info('invalid input of transport')
         return INVALID_INPUT
 
     required_params = [
@@ -149,6 +152,7 @@ def booking_transport(transport_id):
         'countOfPersons'
     ]
     try:
+        LOGGER.info(request.json)
         params = dict(request.json)
         LOGGER.info('{}, {}'.format(type(params), params))
     except:
