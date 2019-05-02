@@ -182,6 +182,7 @@ def booking_transport(transport_id):
 
 @route('/transport/buyout/<booking_id>', method='POST')
 def buy_booking(booking_id):
+    LOGGER.info('cuyouting for booking {}'.format(booking_id))
     if not isinstance(booking_id, int) or booking_id < 1:
         return INVALID_INPUT
     buyout_result = buyout_booking(booking_id)
