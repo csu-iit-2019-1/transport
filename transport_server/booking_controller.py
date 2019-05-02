@@ -64,6 +64,7 @@ def book_transport(transport_id, person_id, count_of_persons):  # noqa: E501
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(sql_insert_booking, (person_id, transport_id, count_of_persons, price*count_of_persons))
+                cursor.commit()
                 cursor.execute(sql_select_booking_id, (person_id, transport_id))
                 booking_id = cursor.fetchone()[0]
     except:
