@@ -288,12 +288,13 @@ def get_price_by_days(departure_date, start_point, end_points, transport_type, c
     try:
         resp = http.request('GET', URL_CITY + 'cities/{}'.format(start_point))
         LOGGER.info(resp.data)
-        data = json.loads(resp.data).replace('\'', '"')
+
+        start_city = json.loads(resp.data.decode('utf-8')).replace('\'', '"')
         LOGGER.info(data)
         # data2 = json.loads(data)
         # data2 = json.loads(data)
         # print(data2['CityName'].lower())
-        start_city = json.loads(data)
+        # start_city = json.loads(data)
         if start_city:
             start_city_name = start_city['CityName'].lower()
         else:
@@ -306,8 +307,8 @@ def get_price_by_days(departure_date, start_point, end_points, transport_type, c
     for point in end_points:
         try:
             res = http.request('GET', URL_CITY + 'cities/{}'.format(point))
-            data = json.loads(res.data).replace('\'', '"')
-            end_city = json.loads(data)
+            end_city = json.loads(res.data.decode('utf-8')).replace('\'', '"')
+            # end_city = json.loads(data)
             if end_city:
                 end_city_names[end_city['CityName'].lower()] = point
             else:
