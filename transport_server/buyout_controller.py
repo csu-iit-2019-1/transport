@@ -25,8 +25,10 @@ def buyout_booking(bookingId):
     """
     sql_select_booking = 'select * from "Booking_Info" where "Id" = %s and "Status" = 0'
 
-    sql_update_booking_status = 'update "Sits" ' \
-                                'set "State" = 3 where "Booking_Id" = %s '
+    sql_update_booking_status = 'update "Booking_Info" ' \
+                                'set "Status" = 1 where "Id" = %s '
+    # sql_insert_booking = 'insert into "Booking_Info"("Person_Id", "Transport_Id", "Count_Of_Persons", "Price") ' \
+    #                      'values (%s, %s, %s, %s)
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
