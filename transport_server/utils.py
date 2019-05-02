@@ -8,7 +8,7 @@ def get_db_connection():
     connection = psycopg2.connect("dbname='Transport' "
                                   "user='postgres' "
                                   "host='localhost' "
-                                  "port='5639' "
+                                  "port='5432' "
                                   "password='secret'")
     return connection
 
@@ -17,7 +17,7 @@ def get_logs_connection():
     connection = psycopg2.connect("dbname='Logs' "
                                   "user='postgres' "
                                   "host='localhost' "
-                                  "port='5639' "
+                                  "port='5432' "
                                   "password='secret'")
     return connection
 
