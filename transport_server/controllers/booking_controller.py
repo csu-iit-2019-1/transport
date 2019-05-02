@@ -1,11 +1,12 @@
 import logging
 import traceback
 
-from transport_server.utils import get_db_connection
+from transport_server.utils import get_db_connection, psqlHandler
 
 LOGGER = logging.getLogger(__name__)
-handler = logging.StreamHandler()
-formatter = logging.Formatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s')
+handler = psqlHandler({'host': "localhost", 'user': "postgres",
+                       'password': "secret", 'database': "Logs", 'port': '5639'})
+formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
 handler.setFormatter(formatter)
 LOGGER.addHandler(handler)
 LOGGER.setLevel(logging.INFO)
@@ -40,6 +41,7 @@ def book_transport(transport_id, person_id, count_of_persons):  # noqa: E501
                 price = cursor.fetchone()[0]
     except:
         LOGGER.error(traceback.format_exc())
+        print(traceback.format_exc())
         return None
 
     LOGGER.info('count of available sits: {}'.format(len(sits_data)))
@@ -48,7 +50,7 @@ def book_transport(transport_id, person_id, count_of_persons):  # noqa: E501
     sits_to_book = sits_id_available[:count_of_persons]
 
     sql_insert_booking = 'insert into "Booking_Info"("Person_Id", "Transport_Id", "Count_Of_Persons", "Price") ' \
-                         'values (%s, %s, %s)'
+                         'values (%s, %s, %s, %s)'
     sql_select_booking_id = 'select "Id" from "Booking_Info" ' \
                             'where "Person_Id" = %s and "Transport_Id" = %s'
     try:
@@ -59,6 +61,7 @@ def book_transport(transport_id, person_id, count_of_persons):  # noqa: E501
                 booking_id = cursor.fetchone()[0]
     except:
         LOGGER.error(traceback.format_exc())
+        print(traceback.format_exc())
         return 'Booking failed'
 
     sql = 'update "Sits" ' \
@@ -74,6 +77,10 @@ def book_transport(transport_id, person_id, count_of_persons):  # noqa: E501
                 cursor.execute(sql, query_params)
     except:
         LOGGER.error(traceback.format_exc())
+        print(traceback.format_exc())
         return 'Booking failed'
 
     return {'bookingId': booking_id}
+
+
+print(book_transport(1, 1, 1))

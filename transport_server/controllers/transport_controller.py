@@ -7,18 +7,19 @@ import urllib3
 
 from transport_server.models.sit import Sit
 from transport_server.models.route import Route
-from transport_server.utils import get_db_connection
+from transport_server.utils import get_db_connection, psqlHandler
 
 LOGGER = logging.getLogger(__name__)
-handler = logging.StreamHandler()
-formatter = logging.Formatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s')
+handler = psqlHandler({'host': "localhost", 'user': "postgres",
+                       'password': "secret", 'database': "Logs", 'port': '5639'})
+formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
 handler.setFormatter(formatter)
 LOGGER.addHandler(handler)
 LOGGER.setLevel(logging.INFO)
 
 http = urllib3.PoolManager()
 
-URL_CITY = 'localhost/city'
+URL_CITY = 'https://apicities20190502035621.azurewebsites.net/api/'
 
 
 # def find_transport_by_parameters(start_point, end_points, departure_date, count_of_persons, transport_type,
@@ -240,22 +241,29 @@ def get_transport_by_id(transport_id):
     end_city = cities[0][0]
     start_point = route_data[3]
     end_point = route_data[4]
-    # try:
-    #     resp = http.request('GET', '/'.join([URL_CITY, start_city.title(), 'cityid']))
-    #     start_city = json.loads(resp.data)
-    #     if start_city and isinstance(start_city, list):
-    #         start_point = start_city[0]['cityId']
-    #     else:
-    #         raise Exception
-    #     resp = http.request('GET', '/'.join([URL_CITY, end_city.title(), 'cityid']))
-    #     end_city = json.loads(resp.data)
-    #     if end_city and isinstance(end_city, list):
-    #         end_point = end_city[0]['cityId']
-    #     else:
-    #         raise Exception
-    # except:
-    #     LOGGER.error(traceback.format_exc())
-    #     return None
+    try:
+        resp = http.request('POST', URL_CITY + 'cityitem',
+                            body=json.dumps({'Name': start_city.title()}),
+                            headers={'Content-type': 'application/json'})
+        data = json.loads(resp.data)
+        # data2 = json.loads(data)
+        start_city = json.loads(data)
+        if start_city and isinstance(start_city, list):
+            start_point = start_city[0]['cityId']
+        else:
+            raise Exception
+        resp = http.request('POST', URL_CITY + 'cityitem',
+                            body=json.dumps({'Name': end_city.title()}),
+                            headers={'Content-type': 'application/json'})
+        data = json.loads(resp.data)
+        end_city = json.loads(data)
+        if end_city and isinstance(end_city, list):
+            end_point = end_city[0]['cityId']
+        else:
+            raise Exception
+    except:
+        LOGGER.error(traceback.format_exc())
+        return None
 
     sits_list = []
     for sit in sits:
@@ -275,41 +283,45 @@ def get_transport_by_id(transport_id):
 
 
 def get_price_by_days(departure_date, start_point, end_points, transport_type, count_of_persons):
-    start_city_name = start_point
-    # try:
-    #     res = http.request('GET', 'city/{}'.format(start_point))
-    #     start_city = json.loads(res)
-    #     if start_city:
-    #         start_city_name = start_city['name'].lower()
-    #     else:
-    #         LOGGER.error('no city with such id')
-    #         return None
-    # except:
-    #     LOGGER.error(traceback.format_exc())
-    #     return None
-    # end_city_names = {}
-    # for point in end_points:
-    #     try:
-    #         res = http.request('GET', 'city/{}'.format(point))
-    #         end_city = json.loads(res)
-    #         if end_city:
-    #             end_city_names[end_city['name'].lower()] = point
-    #         else:
-    #             LOGGER.error('no city with such id')
-    #             return None
-    #     except:
-    #         LOGGER.error(traceback.format_exc())
-    #         return None
+    # start_city_name = start_point
+    try:
+        resp = http.request('GET', URL_CITY + 'cities/{}'.format(start_point))
+        data = json.loads(resp.data).replace('\'', '"')
+        # data2 = json.loads(data)
+        # print(data2['CityName'].lower())
+        start_city = json.loads(data)
+        if start_city:
+            start_city_name = start_city['CityName'].lower()
+        else:
+            LOGGER.error('no city with such id')
+            return None
+    except:
+        LOGGER.error(traceback.format_exc())
+        return None
     end_city_names = {}
-    for c in end_points:
-        end_city_names[c] = c
+    for point in end_points:
+        try:
+            res = http.request('GET', URL_CITY + 'cities/{}'.format(point))
+            data = json.loads(res.data).replace('\'', '"')
+            end_city = json.loads(data)
+            if end_city:
+                end_city_names[end_city['CityName'].lower()] = point
+            else:
+                LOGGER.error('no city with such id')
+                return None
+        except:
+            LOGGER.error(traceback.format_exc())
+            return None
+    # end_city_names = {}
+    # for c in end_points:
+    #     end_city_names[c] = c
 
     sql_select_start_point = 'select "Id" from "Cities" ' \
                              'where lower("Name") = %s'
     sql_select_end_points = 'select "Id", lower("Name") from "Cities" ' \
                             'where lower("Name") = %s '
     for i in range(len(end_city_names) - 1):
-        sql_select_end_points += 'or lower("Name") = %s'
+        sql_select_end_points += 'or lower("Name") = %s '
     with get_db_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute(sql_select_start_point, (start_city_name,))
@@ -321,6 +333,7 @@ def get_price_by_days(departure_date, start_point, end_points, transport_type, c
             end_points_data = cursor.fetchall()
             if not end_points_data:
                 LOGGER.error('No such cities in db')
+    print(start_point_id, end_points_data)
     sql_get_routes_by_end_point = 'select "Routes"."Id", "Routes"."Name", ' \
                                   '"Departure_Time", "Arrive_Time", "Price" ' \
                                   'from "Routes", "Types" ' \
@@ -355,10 +368,33 @@ def get_price_by_days(departure_date, start_point, end_points, transport_type, c
                         routes_resp.append(Route(transport_id=-1,
                                                  start_point=start_point,
                                                  end_point=end_city_names[p[1]],
-                                                 transport_type=t_type))
+                                                 transport_type=t_type).to_dict())
     return routes_resp
 
-
-# tr = get_price_by_days('2019-05-05', 'москва', ['париж', 'лондон'], ['aircraft', 'train'], 0)
+# url = 'https://apicities20190502035621.azurewebsites.net/api/cities/Челябинск/cityid'.encode('utf-8')
+# city = 'Челябинск'.encode('utf-8')
+# print(type(city))
+# resp = http.request('GET', 'https://apicities20190502035621.azurewebsites.net/api/cities/8809')
+# resp = http.request('GET', URL_CITY + '/cities/{}'.format(8809))
+# # resp = http.request('POST', 'https://apicities20190502035621.azurewebsites.net/api/cityitem',
+# #                     body=json.dumps({'Name': 'Лондон'}),
+# #                     headers={'Content-type': 'application/json'})
+# print(resp.status)
+# # print(resp.data)
+# data = json.loads(resp.data).replace('\'', '"')
+# data2 = json.loads(data)
+# # # print(data2['CityName'].lower())
+# # # print(type(data))
+# # data2 = json.loads(data)
+# print(type(data2))
+# print(data2)
+# for t in data2:
+#     print(t)
+# tr = get_price_by_days('2019-05-05', 8809, [6437, 5371, 904], ['aircraft', 'bus'], 0)
+# # tr = vv()
 # for t in tr:
 #     print(t)
+# che 8809
+# msc 6437
+# par 5371
+# lon 904

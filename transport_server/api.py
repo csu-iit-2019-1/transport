@@ -10,12 +10,14 @@ from bottle import route, run, request, response, HTTPResponse
 
 from transport_server.controllers.booking_controller import book_transport
 from transport_server.controllers.buyout_controller import buyout_booking
-from transport_server.controllers.transport_controller import get_transport_by_id, find_transport_by_parameters, \
+from transport_server.controllers.transport_controller import get_transport_by_id, \
     get_price_by_days
+from transport_server.utils import psqlHandler
 
 LOGGER = logging.getLogger(__name__)
-handler = logging.StreamHandler()
-formatter = logging.Formatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s')
+handler = psqlHandler({'host': "localhost", 'user': "postgres",
+                       'password': "secret", 'database': "Logs", 'port': '5639'})
+formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
 handler.setFormatter(formatter)
 LOGGER.addHandler(handler)
 LOGGER.setLevel(logging.INFO)
@@ -44,49 +46,50 @@ def get_transport(transport_id):
         )
 
 
-@route('/transport/get_list', method='POST')
-def get_transport_list():
-    LOGGER.info('getting transport list')
-    try:
-        params = dict(request.json)
-    except:
-        LOGGER.error(traceback.format_exc())
-        return INVALID_INPUT
-    if not params:
-        LOGGER.info('No params')
-        return INVALID_INPUT
-    LOGGER.info('params: {}'.format(params))
+# @route('/transport/get_list', method='POST')
+# def get_transport_list():
+#     LOGGER.info('getting transport list')
+#     try:
+#         params = dict(request.json)
+#     except:
+#         LOGGER.error(traceback.format_exc())
+#         return INVALID_INPUT
+#     if not params:
+#         LOGGER.info('No params')
+#         return INVALID_INPUT
+#     LOGGER.info('params: {}'.format(params))
+#
+#     start_point = params['startPoint']
+#     end_points = params['endPoints']
+#     departure_date = params['departureDate']
+#     if 'countOfPersons' in params.keys():
+#         count_of_persons = params['countOfPersons']
+#     else:
+#         count_of_persons = 0
+#     if 'transportType' in params.keys():
+#         transport_type = params['transportType']
+#     else:
+#         transport_type = ['aircraft', 'train', 'bus']
+#
+#     transport_list = find_transport_by_parameters(start_point, end_points, departure_date,
+#                                                   count_of_persons, transport_type)
+#     LOGGER.info(transport_list)
+#     if transport_list:
+#         return HTTPResponse(
+#             status=200,
+#             body=json.dumps(transport_list).encode('utf-8')
+#         )
+#     else:
+#         return HTTPResponse(
+#             status=400,
+#             body='Invalid operation'
+#         )
 
-    start_point = params['startPoint']
-    end_points = params['endPoints']
-    departure_date = params['departureDate']
-    if 'countOfPersons' in params.keys():
-        count_of_persons = params['countOfPersons']
-    else:
-        count_of_persons = 0
-    if 'transportType' in params.keys():
-        transport_type = params['transportType']
-    else:
-        transport_type = ['aircraft', 'train', 'bus']
 
-    transport_list = find_transport_by_parameters(start_point, end_points, departure_date,
-                                                  count_of_persons, transport_type)
-    LOGGER.info(transport_list)
-    if transport_list:
-        return HTTPResponse(
-            status=200,
-            body=json.dumps(transport_list).encode('utf-8')
-        )
-    else:
-        return HTTPResponse(
-            status=400,
-            body='Invalid operation'
-        )
-
-
-"""
-{'transportType': ['aircraft', 'train'], 'departureDate': 1556755200, 'endPoints': [1, 3, 5], 'startPoint': 3}
-"""
+# @route('/logs', method='GET')
+# def get_logs():
+#     try:
+#         with get_logs_connection
 
 
 @route('/transport/pricelist', method='POST')
@@ -187,6 +190,7 @@ def buy_booking(booking_id):
 
 
 if __name__ == '__main__':
+
     LOGGER.info("SERVER HAS BEEN STARTED!!!")
     # run(host='0.0.0.0', port=8080)
     run(host='0.0.0.0', port=8181, server='gunicorn', workers=4, reload=True, debug=False)
